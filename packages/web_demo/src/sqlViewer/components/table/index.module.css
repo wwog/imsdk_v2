@@ -1,9 +1,8 @@
 .root {
-  --cell-padding-left: 8px;
-  --cell-padding-right: 12px;
   --cell-even-radius: 4px;
   --cell-even-background-color: rgb(134, 134, 134, 0.2);
   --cell-vertical-padding: 2px;
+  --cell-horizontal-padding: 6px;
   background-color: white;
   height: 100%;
   overflow-y: auto;
@@ -32,8 +31,8 @@
       height: 100%;
       tr {
         td {
-          padding-left: var(--cell-padding-left);
-          padding-right: var(--cell-padding-right);
+          padding-left: var(--cell-horizontal-padding);
+          padding-right: var(--cell-horizontal-padding);
           padding-top: var(--cell-vertical-padding);
           padding-bottom: var(--cell-vertical-padding);
         }
@@ -45,6 +44,7 @@
         }
         td.placeholder {
           background-color: transparent !important;
+          width: 0px;
         }
         td:nth-child(2) {
           margin-left: 4px;
