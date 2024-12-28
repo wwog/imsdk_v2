@@ -1,0 +1,19 @@
+{
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "cSpell.words": [
+    "dflt",
+    "notnull",
+    "onready",
+    "onunhandled",
+    "rslib",
+    "serviceworker",
+    "tseslint",
+    "turbopack",
+    "Turborepo",
+    "wwog"
+  ]
+}

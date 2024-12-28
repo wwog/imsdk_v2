@@ -1,0 +1,16 @@
+{
+  "name": "@repo/im-core",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "files": [
+    "./src"
+  ],
+  "dependencies": {
+    "@sqlite.org/sqlite-wasm": "^3.47.2-build1"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*"
+  }
+}
