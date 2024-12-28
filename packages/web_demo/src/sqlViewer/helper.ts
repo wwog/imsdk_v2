@@ -49,3 +49,26 @@ export const getTableData = async (
 
   return data
 }
+
+export const editTableData = async (
+  query: (sql: string) => Promise<any>,
+  tableName: string,
+  row: any,
+  field: string,
+  value: any,
+) => {
+  const formattedValue = typeof value === 'string' ? `'${value}'` : value
+  if (row.id) {
+    return await query(
+      `UPDATE ${tableName} SET ${field} = ${formattedValue} WHERE id = ${row.id};`,
+    )
+  } else {
+    return await query(
+      `UPDATE ${tableName} SET ${field} = ${formattedValue} WHERE ${Object.keys(
+        row,
+      )
+        .map((key) => `${key} = ${row[key]}`)
+        .join(' AND ')}}`,
+    )
+  }
+}

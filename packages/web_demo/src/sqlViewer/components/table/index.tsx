@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react'
-import { clsx, getTableData } from '../../helper'
+import { clsx, editTableData, getTableData } from '../../helper'
 import styles from './index.module.css'
 import { useHelper, useViewState } from '../../context'
 
@@ -14,7 +14,7 @@ const PAGESIZE = 50
 //#region component
 export const Table: FC<TableProps> = (props) => {
   const { className, style } = props
-  const { query } = useHelper()
+  const { query, exec } = useHelper()
   const { selectedTable, setSelectedRow, selectedRow } = useViewState()
   const columns = selectedTable?.columns
 
@@ -34,6 +34,18 @@ export const Table: FC<TableProps> = (props) => {
   useEffect(() => {
     queryTableData()
   }, [selectedTable])
+
+
+  const onColumnDoubleClick = async (row: any, column: any) => {
+    console.log('row[column.name]', row, column)
+    const value = prompt('请输入新的值', row[column.name])
+    if (value === null) return
+    if (!selectedTable) return
+    await editTableData(exec, selectedTable.name, row, column.name, value)
+    queryTableData()
+  }
+  console.log('selectedRow', selectedRow)
+
   if (!columns) return null
 
   return (
@@ -77,7 +89,14 @@ export const Table: FC<TableProps> = (props) => {
                 <td className={styles.placeholder}></td>
 
                 {columns.map((column) => (
-                  <td key={column.name}>{row[column.name]}</td>
+                  <td
+                    key={column.name}
+                    onDoubleClick={() => {
+                      onColumnDoubleClick(row, column)
+                    }}
+                  >
+                    {row[column.name]}
+                  </td>
                 ))}
                 <td className={styles.placeholder}></td>
               </tr>
