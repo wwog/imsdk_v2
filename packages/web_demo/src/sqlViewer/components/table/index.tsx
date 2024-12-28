@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from 'react'
 import { clsx, getTableData } from '../../helper'
 import styles from './index.module.css'
 import { useHelper, useViewState } from '../../context'
+import { Button } from '../button'
 
 //#region component Types
 export interface TableProps {
@@ -38,53 +39,60 @@ export const Table: FC<TableProps> = (props) => {
 
   return (
     <div className={clsx(className, styles.root)} style={style}>
-      <table
-        className={styles.table}
-        border={0}
-        cellPadding={0}
-        cellSpacing={0}
-      >
-        <thead>
-          <tr>
-            <th className={styles.placeholder}></th>
-            {columns.map((column) => (
-              <th key={column.name}>{column.name}</th>
-            ))}
-            <th className={styles.placeholder}></th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, rowIndex) => {
-            const jsonStr = JSON.stringify(row)
-            const isSelected = selectedRow === jsonStr
-            return (
-              <tr
-                key={rowIndex}
-                tabIndex={1}
-                onClick={() => {
-                  setSelectedRow(jsonStr)
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
+      <div className={styles.tableWrapper}>
+        <table
+          className={styles.table}
+          border={0}
+          cellPadding={0}
+          cellSpacing={0}
+        >
+          <thead>
+            <tr>
+              <th className={styles.placeholder}></th>
+              {columns.map((column) => (
+                <th key={column.name}>{column.name}</th>
+              ))}
+              <th className={styles.placeholder}></th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row, rowIndex) => {
+              const jsonStr = JSON.stringify(row)
+              const isSelected = selectedRow === jsonStr
+              return (
+                <tr
+                  key={rowIndex}
+                  tabIndex={1}
+                  onClick={() => {
                     setSelectedRow(jsonStr)
-                  }
-                }}
-                onContextMenu={(e) => {
-                  e.preventDefault()
-                }}
-                className={clsx(styles.row, isSelected && styles.selected)}
-              >
-                <td className={styles.placeholder}></td>
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      setSelectedRow(jsonStr)
+                    }
+                  }}
+                  onContextMenu={(e) => {
+                    e.preventDefault()
+                  }}
+                  className={clsx(styles.row, isSelected && styles.selected)}
+                >
+                  <td className={styles.placeholder}></td>
 
-                {columns.map((column) => (
-                  <td key={column.name}>{row[column.name]}</td>
-                ))}
-                <td className={styles.placeholder}></td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+                  {columns.map((column) => (
+                    <td key={column.name}>{row[column.name]}</td>
+                  ))}
+                  <td className={styles.placeholder}></td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <div className={styles.pagination}>
+        <Button>上一页</Button>
+        <Button>下一页</Button>
+      </div>
     </div>
   )
 }
