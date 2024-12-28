@@ -1,6 +1,7 @@
 .root {
+  user-select: none;
+  height: auto;
   border-radius: 6px;
-  padding: 1px 6px;
   border: none;
   background-color: white;
   box-shadow:
@@ -10,7 +11,6 @@
     -0.5px 0.5px 0.5px rgba(0, 0, 0, 0.3);
   transition: all 0.3s;
   position: relative;
-
   &::before {
     content: '';
     position: absolute;
@@ -19,6 +19,24 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+  }
+  &:hover {
+    &::before {
+      background-color: rgba(72, 72, 72, 0.1);
+    }
+  }
+  &:active {
+    background-color: rgb(241, 241, 241) !important;
+  }
+}
+
+.disabled {
+  background-color: rgb(216, 212, 212) !important;
+  color: rgb(131, 127, 127) !important;
+  &:hover {
+    &::before {
+      background-color: unset !important;
+    }
   }
 }

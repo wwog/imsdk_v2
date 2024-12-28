@@ -44,7 +44,6 @@ export const Table: FC<TableProps> = (props) => {
     await editTableData(exec, selectedTable.name, row, column.name, value)
     queryTableData()
   }
-  console.log('selectedRow', selectedRow)
 
   if (!columns) return null
 
@@ -108,7 +107,7 @@ export const Table: FC<TableProps> = (props) => {
       </div>
 
       <div className={styles.pagination}>
-        <Button>上一页</Button>
+        <Button disabled={true}>上一页</Button>
         <Button>下一页</Button>
       </div>
     </div>
