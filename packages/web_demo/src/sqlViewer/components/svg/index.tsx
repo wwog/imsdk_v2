@@ -1,13 +1,13 @@
 import type { FC } from 'react'
 
 //#region component Types
-export interface DownSvgProps {
+export interface TableSvgProps {
   size?: string | number
 }
 //#endregion component Types
 
 //#region component
-export const DownArrowSvg: FC<DownSvgProps> = ({ size = 24 }) => {
+export const TableSvg: FC<TableSvgProps> = ({ size = 24 }) => {
   return (
     <svg
       className="icon"

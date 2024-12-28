@@ -2,7 +2,7 @@ import { type FC, useState, useEffect } from 'react'
 import { useHelper, useViewState } from '../../context'
 import { clsx, getAllTables, type GetAllTablesResult } from '../../helper'
 import styles from './index.module.css'
-import { DownArrowSvg } from '../svg'
+import { TableSvg } from '../svg'
 
 export const TableList: FC = () => {
   const helper = useHelper()
@@ -31,7 +31,7 @@ export const TableList: FC = () => {
               className={clsx(isSelected && styles.selected, styles.item)}
             >
               <div className={styles.tableName}>
-                <DownArrowSvg />
+                <TableSvg />
                 {table.name}
               </div>
 

@@ -28,19 +28,21 @@ export const useHelper = () => {
 interface ViewStateContextType {
   selectedTable?: GetAllTablesResult
   setSelectedTable: (table: GetAllTablesResult | undefined) => void
+  selectedRow?: any
+  setSelectedRow: (row: any) => void
 }
 
-const ViewStateContext = createContext<ViewStateContextType>({
-  selectedTable: undefined,
-  setSelectedTable: () => {},
-})
+const ViewStateContext = createContext<ViewStateContextType>({} as any)
 
 export const ViewStateProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [selectedTable, setSelectedTable] = useState<GetAllTablesResult>()
+  const [selectedRow, setSelectedRow] = useState<any>()
   return (
-    <ViewStateContext.Provider value={{ selectedTable, setSelectedTable }}>
+    <ViewStateContext.Provider
+      value={{ selectedTable, setSelectedTable, setSelectedRow, selectedRow }}
+    >
       {children}
     </ViewStateContext.Provider>
   )

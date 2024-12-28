@@ -15,7 +15,7 @@ const PAGESIZE = 50
 export const Table: FC<TableProps> = (props) => {
   const { className, style } = props
   const { query } = useHelper()
-  const { selectedTable } = useViewState()
+  const { selectedTable, setSelectedRow, selectedRow } = useViewState()
   const columns = selectedTable?.columns
 
   const [page] = useState(1)
@@ -33,7 +33,7 @@ export const Table: FC<TableProps> = (props) => {
   useEffect(() => {
     queryTableData()
   }, [selectedTable])
-
+  console.log('selectedRow', selectedRow)
   if (!columns) return null
 
   return (
@@ -46,7 +46,7 @@ export const Table: FC<TableProps> = (props) => {
       >
         <thead>
           <tr>
-            <th className={styles.placeholder} ></th>
+            <th className={styles.placeholder}></th>
             {columns.map((column) => (
               <th key={column.name}>{column.name}</th>
             ))}
@@ -54,16 +54,25 @@ export const Table: FC<TableProps> = (props) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              <td className={styles.placeholder}></td>
+          {data.map((row, rowIndex) => {
+            const isSelected = selectedRow === JSON.stringify(row)
+            return (
+              <tr
+                key={rowIndex}
+                onClick={() => {
+                  setSelectedRow(JSON.stringify(row))
+                }}
+                className={clsx(styles.row, isSelected && styles.selected)}
+              >
+                <td className={styles.placeholder}></td>
 
-              {columns.map((column) => (
-                <td key={column.name}>{row[column.name]}</td>
-              ))}
-              <td className={styles.placeholder}></td>
-            </tr>
-          ))}
+                {columns.map((column) => (
+                  <td key={column.name}>{row[column.name]}</td>
+                ))}
+                <td className={styles.placeholder}></td>
+              </tr>
+            )
+          })}
         </tbody>
       </table>
     </div>
