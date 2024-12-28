@@ -27,12 +27,14 @@ export const Table: FC<TableProps> = (props) => {
       pageSize: PAGESIZE,
     })
     setData(res)
+    console.log(res)
     return res
   }
 
   useEffect(() => {
     queryTableData()
   }, [selectedTable])
+
 
   const onColumnDoubleClick = async (row: any, column: any) => {
     console.log('row[column.name]', row, column)
@@ -43,6 +45,7 @@ export const Table: FC<TableProps> = (props) => {
     queryTableData()
   }
   console.log('selectedRow', selectedRow)
+
   if (!columns) return null
 
   return (
@@ -64,12 +67,22 @@ export const Table: FC<TableProps> = (props) => {
         </thead>
         <tbody>
           {data.map((row, rowIndex) => {
-            const isSelected = selectedRow === JSON.stringify(row)
+            const jsonStr = JSON.stringify(row)
+            const isSelected = selectedRow === jsonStr
             return (
               <tr
                 key={rowIndex}
+                tabIndex={1}
                 onClick={() => {
-                  setSelectedRow(JSON.stringify(row))
+                  setSelectedRow(jsonStr)
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setSelectedRow(jsonStr)
+                  }
+                }}
+                onContextMenu={(e) => {
+                  e.preventDefault()
                 }}
                 className={clsx(styles.row, isSelected && styles.selected)}
               >
