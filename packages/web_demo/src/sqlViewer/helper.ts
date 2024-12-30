@@ -66,11 +66,11 @@ export const tableQuery = async (
   filter: TFilter = {},
 ) => {
   const { page, pageSize } = pagination
-
+  console.log('filter', filter)
   const filterConditions = Object.keys(filter)
     .map((key) => {
       const { type, value } = filter[key]
-      if (value === '') return ''
+      if (['', '<', '>'].includes(value)) return ''
       if (type === 'string') {
         return `${key} LIKE '%${value}%'`
       } else if (type === 'number') {
@@ -83,6 +83,7 @@ export const tableQuery = async (
         return ''
       }
     })
+    .filter(Boolean)
     .join(' AND ')
 
   const whereClause = filterConditions !== '' ? `WHERE ${filterConditions}` : ''
