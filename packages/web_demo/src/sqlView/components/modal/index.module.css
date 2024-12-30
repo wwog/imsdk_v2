@@ -1,0 +1,39 @@
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: none;
+  padding: 0;
+  background: white;
+  box-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  min-width: 80px;
+  border-radius: 4px;
+  overflow: hidden;
+  padding-top: 20px;
+}
+
+.modalContent {
+  padding: 0px;
+}
+
+.modalClose {
+  color: rgb(255, 77, 0);
+  position: absolute;
+  top: 0.8px;
+  right: 0.8px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+
+  &:hover {
+    color: rgb(220, 66, 0);
+  }
+
+  &:active {
+    color: rgb(200, 55, 0);
+  }
+}

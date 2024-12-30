@@ -4,6 +4,15 @@
   background-color: #dfe1e2;
   padding: 16px;
   user-select: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .bot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
   .tableList {
     margin-top: 10px;
