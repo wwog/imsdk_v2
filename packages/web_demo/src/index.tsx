@@ -8,6 +8,12 @@ import './index.css'
 const db = await Database.connect({
   filename: 'test.sqlite3',
 })
+declare global {
+  interface Window {
+    db: Database
+  }
+}
+window.db = db
 
 // await db.exec(baseSql)
 

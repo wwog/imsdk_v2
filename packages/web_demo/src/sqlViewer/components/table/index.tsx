@@ -2,7 +2,8 @@ import { FC, useEffect, useState } from 'react'
 import { clsx, editTableData, getTableData } from '../../helper'
 import styles from './index.module.css'
 import { useHelper, useViewState } from '../../context'
-import { TableSvg, RefreshSvg } from '../svg'
+import { TableSvg } from '../svg'
+import { Button } from '../button'
 
 //#region component Types
 export interface TableProps {
@@ -44,13 +45,12 @@ export const Table: FC<TableProps> = (props) => {
     await editTableData(exec, selectedTable.name, row, column.name, value)
     queryTableData()
   }
-  console.log('selectedRow', selectedRow)
 
   if (!columns) return null
 
   return (
     <div className={clsx(className, styles.root)} style={style}>
-      <div className={clsx(className, styles.tools)}>
+       <div className={clsx(className, styles.tools)}>
         <div className={clsx(className, styles.left)}>
           <TableSvg />
           {selectedTable.name}
@@ -59,60 +59,67 @@ export const Table: FC<TableProps> = (props) => {
           <div onClick={() => queryTableData()}>刷新</div>
         </div>
       </div>
-      <table
-        className={styles.table}
-        border={0}
-        cellPadding={0}
-        cellSpacing={0}
-      >
-        <thead>
-          <tr>
-            <th className={styles.placeholder}></th>
-            {columns.map((column) => (
-              <th key={column.name}>{column.name}</th>
-            ))}
-            <th className={styles.placeholder}></th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, rowIndex) => {
-            const jsonStr = JSON.stringify(row)
-            const isSelected = selectedRow === jsonStr
-            return (
-              <tr
-                key={rowIndex}
-                tabIndex={1}
-                onClick={() => {
-                  setSelectedRow(jsonStr)
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
+      <div className={styles.tableWrapper}>
+        <table
+          className={styles.table}
+          border={0}
+          cellPadding={0}
+          cellSpacing={0}
+        >
+          <thead>
+            <tr>
+              <th className={styles.placeholder}></th>
+              {columns.map((column) => (
+                <th key={column.name}>{column.name}</th>
+              ))}
+              <th className={styles.placeholder}></th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row, rowIndex) => {
+              const jsonStr = JSON.stringify(row)
+              const isSelected = selectedRow === jsonStr
+              return (
+                <tr
+                  key={rowIndex}
+                  tabIndex={1}
+                  onClick={() => {
                     setSelectedRow(jsonStr)
-                  }
-                }}
-                onContextMenu={(e) => {
-                  e.preventDefault()
-                }}
-                className={clsx(styles.row, isSelected && styles.selected)}
-              >
-                <td className={styles.placeholder}></td>
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      setSelectedRow(jsonStr)
+                    }
+                  }}
+                  onContextMenu={(e) => {
+                    e.preventDefault()
+                  }}
+                  className={clsx(styles.row, isSelected && styles.selected)}
+                >
+                  <td className={styles.placeholder}></td>
 
-                {columns.map((column) => (
-                  <td
-                    key={column.name}
-                    onDoubleClick={() => {
-                      onColumnDoubleClick(row, column)
-                    }}
-                  >
-                    {row[column.name]}
-                  </td>
-                ))}
-                <td className={styles.placeholder}></td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+                  {columns.map((column) => (
+                    <td
+                      key={column.name}
+                      onDoubleClick={() => {
+                        onColumnDoubleClick(row, column)
+                      }}
+                    >
+                      {row[column.name]}
+                    </td>
+                  ))}
+                  <td className={styles.placeholder}></td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <div className={styles.pagination}>
+        <Button disabled={true}>上一页</Button>
+        <Button>下一页</Button>
+      </div>
     </div>
   )
 }
