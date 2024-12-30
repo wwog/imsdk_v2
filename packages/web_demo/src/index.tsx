@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { Database } from '@repo/im-core/src/db/database'
 // import baseSql from '@repo/im-core/src/db/base.sql'
-import { SQLView } from './sqlViewer'
+import { SQLView } from './sqlView'
 import './index.css'
 
 const db = await Database.connect({
