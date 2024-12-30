@@ -5,6 +5,7 @@ import { useHelper, useViewState } from '../../context'
 import { RefreshSvg, TableSvg } from '../svg'
 import { Button } from '../button'
 import { IconButton } from '../button/iconButton'
+import { ContextMenu } from '../contextMenu'
 
 //#region component Types
 export interface TableProps {
@@ -89,36 +90,58 @@ export const Table: FC<TableProps> = (props) => {
               const jsonStr = JSON.stringify(row)
               const isSelected = selectedRow === jsonStr
               return (
-                <tr
-                  key={rowIndex}
-                  tabIndex={1}
-                  onClick={() => {
-                    setSelectedRow(jsonStr)
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      setSelectedRow(jsonStr)
-                    }
-                  }}
-                  onContextMenu={(e) => {
-                    e.preventDefault()
-                  }}
-                  className={clsx(styles.row, isSelected && styles.selected)}
+                <ContextMenu
+                  key={rowIndex + page.current}
+                  items={[
+                    {
+                      label: '复制',
+                      onClick: () => {
+                        navigator.clipboard.writeText(jsonStr)
+                      },
+                    },
+                    {
+                      label: '删除',
+                      onClick: async () => {
+                        if (!selectedTable) return
+                        /*  await exec(
+                          `DELETE FROM ${selectedTable.name} WHERE ${selectedTable.columns[0].name} = ${row[selectedTable.columns[0].name]}`,
+                        )
+                        queryTableData() */
+                      },
+                    },
+                  ]}
                 >
-                  <td className={styles.placeholder}></td>
+                  <tr
+                    key={rowIndex}
+                    tabIndex={1}
+                    onClick={() => {
+                      setSelectedRow(jsonStr)
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        setSelectedRow(jsonStr)
+                      }
+                    }}
+                    onContextMenu={() => {
+                      setSelectedRow(jsonStr)
+                    }}
+                    className={clsx(styles.row, isSelected && styles.selected)}
+                  >
+                    <td className={styles.placeholder}></td>
 
-                  {columns.map((column) => (
-                    <td
-                      key={column.name}
-                      onDoubleClick={() => {
-                        onColumnDoubleClick(row, column)
-                      }}
-                    >
-                      {row[column.name]}
-                    </td>
-                  ))}
-                  <td className={styles.placeholder}></td>
-                </tr>
+                    {columns.map((column) => (
+                      <td
+                        key={column.name}
+                        onDoubleClick={() => {
+                          onColumnDoubleClick(row, column)
+                        }}
+                      >
+                        {row[column.name]}
+                      </td>
+                    ))}
+                    <td className={styles.placeholder}></td>
+                  </tr>
+                </ContextMenu>
               )
             })}
           </tbody>
