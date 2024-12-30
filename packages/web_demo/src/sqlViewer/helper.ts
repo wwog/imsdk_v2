@@ -46,8 +46,18 @@ export const getTableData = async (
   const data = await query(
     `SELECT * FROM ${tableName} LIMIT ${pageSize} OFFSET ${(page - 1) * pageSize};`,
   )
+  const totalResult = await query(`SELECT COUNT(*) as count FROM ${tableName};`)
+  const total = totalResult[0].count
 
-  return data
+  const isLastPage = page * pageSize >= total
+
+  return {
+    data,
+    total,
+    currentPage: page,
+    pageSize,
+    isLastPage,
+  }
 }
 
 export const editTableData = async (

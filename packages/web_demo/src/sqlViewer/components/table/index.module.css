@@ -94,5 +94,15 @@
     justify-content: center;
     align-items: center;
     gap: 12px;
+
+    .pageList {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    span {
+      font-size: 12px;
+    }
   }
 }

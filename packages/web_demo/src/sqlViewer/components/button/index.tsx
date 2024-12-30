@@ -9,6 +9,7 @@ export interface ButtonProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl'
   type?: 'primary' | 'default' | 'danger'
   disabled?: boolean
+  onClick?: () => void
 }
 //#endregion component Types
 
@@ -67,7 +68,7 @@ const getTypeStyle = (type: ButtonProps['type']) => {
 
 //#region component
 export const Button: FC<ButtonProps> = (props) => {
-  const { className, style, children, size, type, disabled } = props
+  const { className, style, children, size, type, disabled, onClick } = props
 
   const typeStyle = useMemo(() => getTypeStyle(type), [type])
   const sizeStyle = useMemo(() => getSizeStyle(size), [size])
@@ -81,6 +82,7 @@ export const Button: FC<ButtonProps> = (props) => {
       disabled={disabled}
       className={clsx(className, styles.root, disabled && styles.disabled)}
       style={_style}
+      onClick={onClick}
     >
       {children}
     </button>

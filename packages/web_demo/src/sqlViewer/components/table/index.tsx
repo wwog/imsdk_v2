@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import { clsx, editTableData, getTableData } from '../../helper'
 import styles from './index.module.css'
 import { useHelper, useViewState } from '../../context'
@@ -19,17 +19,23 @@ export const Table: FC<TableProps> = (props) => {
   const { selectedTable, setSelectedRow, selectedRow } = useViewState()
   const columns = selectedTable?.columns
 
-  const [page] = useState(1)
+  const page = useRef(1)
   const [data, setData] = useState<any[]>([])
+  const [isEnd, setIsEnd] = useState(false)
+  const [total, setTotal] = useState(0)
+  const totalPageSize = Math.ceil(total / PAGESIZE)
+
   const queryTableData = async () => {
     if (!selectedTable) return
     const res = await getTableData(query, selectedTable.name, {
-      page,
+      page: page.current,
       pageSize: PAGESIZE,
     })
-    setData(res)
+    const { data, isLastPage, total } = res
+    setData(data)
+    setIsEnd(isLastPage)
+    setTotal(total)
     console.log(res)
-    return res
   }
 
   useEffect(() => {
@@ -107,8 +113,66 @@ export const Table: FC<TableProps> = (props) => {
       </div>
 
       <div className={styles.pagination}>
-        <Button disabled={true}>上一页</Button>
-        <Button>下一页</Button>
+        <Button
+          disabled={page.current === 1}
+          onClick={() => {
+            page.current--
+            queryTableData()
+          }}
+        >
+          上一页
+        </Button>
+
+        <div className={styles.pageList}>
+          {totalPageSize > 1 && [
+            <Button
+              key="1"
+              onClick={() => {
+                page.current = 1
+                queryTableData()
+              }}
+              disabled={page.current === 1}
+            >
+              首页
+            </Button>,
+            ...Array.from({ length: totalPageSize }).map((_, index) => (
+              <Button
+                size="lg"
+                key={index}
+                onClick={() => {
+                  page.current = index + 1
+                  queryTableData()
+                }}
+                disabled={page.current === index + 1}
+              >
+                {index + 1}
+              </Button>
+            )),
+            <Button
+              key="end"
+              onClick={() => {
+                page.current = totalPageSize
+                queryTableData()
+              }}
+              disabled={page.current === totalPageSize}
+            >
+              尾页
+            </Button>,
+          ]}
+        </div>
+
+        <Button
+          onClick={() => {
+            page.current++
+            queryTableData()
+          }}
+          disabled={isEnd}
+        >
+          下一页
+        </Button>
+        <span>
+          {page.current} / {totalPageSize}
+        </span>
       </div>
     </div>
   )
