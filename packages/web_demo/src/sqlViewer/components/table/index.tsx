@@ -2,8 +2,9 @@ import { FC, useEffect, useRef, useState } from 'react'
 import { clsx, editTableData, getTableData } from '../../helper'
 import styles from './index.module.css'
 import { useHelper, useViewState } from '../../context'
-import { TableSvg } from '../svg'
+import { RefreshSvg, TableSvg } from '../svg'
 import { Button } from '../button'
+import { IconButton } from '../button/iconButton'
 
 //#region component Types
 export interface TableProps {
@@ -56,13 +57,15 @@ export const Table: FC<TableProps> = (props) => {
 
   return (
     <div className={clsx(className, styles.root)} style={style}>
-       <div className={clsx(className, styles.tools)}>
+      <div className={clsx(className, styles.tools)}>
         <div className={clsx(className, styles.left)}>
           <TableSvg />
           {selectedTable.name}
         </div>
         <div className={clsx(className, styles.right)}>
-          <div onClick={() => queryTableData()}>刷新</div>
+          <IconButton onClick={() => queryTableData()}>
+            <RefreshSvg size={20} />
+          </IconButton>
         </div>
       </div>
       <div className={styles.tableWrapper}>
@@ -136,7 +139,7 @@ export const Table: FC<TableProps> = (props) => {
         <div className={styles.pageList}>
           {totalPageSize > 1 && [
             <Button
-              key="1"
+              key="start"
               onClick={() => {
                 page.current = 1
                 queryTableData()
