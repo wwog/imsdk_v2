@@ -22,7 +22,7 @@ export interface TableProps {
 }
 //#endregion component Types
 
-const PAGESIZE = 50
+const DEFPAGESIZE = 50
 //#region component
 export const Table: FC<TableProps> = (props) => {
   const { className, style } = props
@@ -34,7 +34,8 @@ export const Table: FC<TableProps> = (props) => {
   const [data, setData] = useState<any[]>([])
   const [isEnd, setIsEnd] = useState(false)
   const [total, setTotal] = useState(0)
-  const totalPageSize = Math.ceil(total / PAGESIZE)
+  const pageSize = useRef(DEFPAGESIZE)
+  const totalPageSize = Math.ceil(total / pageSize.current)
   const mapFilter = useRef<TFilter>({})
 
   const queryTableData = async (callback?: () => void) => {
@@ -44,7 +45,7 @@ export const Table: FC<TableProps> = (props) => {
       selectedTable.name,
       {
         page: page.current,
-        pageSize: PAGESIZE,
+        pageSize: pageSize.current,
       },
       mapFilter.current,
     )
@@ -79,6 +80,22 @@ export const Table: FC<TableProps> = (props) => {
           {selectedTable.name}
         </div>
         <div className={clsx(className, styles.right)}>
+          <Input
+            label="pageSize"
+            placeholder="50"
+            style={{ width: 60 }}
+            value={pageSize.current + ''}
+            onChange={(v) => {
+              if (v === '0') {
+                pageSize.current = DEFPAGESIZE
+              } else if (v === '') {
+                pageSize.current = 1
+              } else {
+                pageSize.current = parseInt(v)
+              }
+              queryTableData()
+            }}
+          />
           <IconButton
             onClick={() => {
               queryTableData(() => {
@@ -195,41 +212,53 @@ export const Table: FC<TableProps> = (props) => {
         </Button>
 
         <div className={styles.pageList}>
-          {totalPageSize > 1 && [
-            <Button
-              key="start"
-              onClick={() => {
-                page.current = 1
-                queryTableData()
-              }}
-              disabled={page.current === 1}
-            >
-              首页
-            </Button>,
-            ...Array.from({ length: totalPageSize }).map((_, index) => (
+          {totalPageSize > 1 && (
+            <>
               <Button
-                size="lg"
-                key={index}
+                key="start"
                 onClick={() => {
-                  page.current = index + 1
+                  page.current = 1
                   queryTableData()
                 }}
-                disabled={page.current === index + 1}
+                disabled={page.current === 1}
               >
-                {index + 1}
+                首页
               </Button>
-            )),
-            <Button
-              key="end"
-              onClick={() => {
-                page.current = totalPageSize
-                queryTableData()
-              }}
-              disabled={page.current === totalPageSize}
-            >
-              尾页
-            </Button>,
-          ]}
+              {page.current > 4 && <span>...</span>}
+              {Array.from({ length: totalPageSize })
+                .slice(
+                  Math.max(0, page.current - 4),
+                  Math.min(totalPageSize, page.current + 4),
+                )
+                .map((_, index) => {
+                  const pageIndex = Math.max(0, page.current - 4) + index + 1
+                  return (
+                    <Button
+                      size="lg"
+                      key={pageIndex}
+                      onClick={() => {
+                        page.current = pageIndex
+                        queryTableData()
+                      }}
+                      disabled={page.current === pageIndex}
+                    >
+                      {pageIndex}
+                    </Button>
+                  )
+                })}
+              {page.current < totalPageSize - 4 && <span>...</span>}
+              <Button
+                key="end"
+                onClick={() => {
+                  page.current = totalPageSize
+                  queryTableData()
+                }}
+                disabled={page.current === totalPageSize}
+              >
+                尾页
+              </Button>
+            </>
+          )}
         </div>
 
         <Button

@@ -6,6 +6,9 @@ export interface InputProps {
   value?: string
   onChange?: (value: string) => void
   showClear?: boolean
+  className?: string
+  label?: string
+  style?: React.CSSProperties
 }
 //#endregion component Types
 
@@ -22,12 +25,24 @@ const useControlled = (value?: string, onChange?: (value: string) => void) => {
 
 //#region component
 export const Input: FC<InputProps> = (props) => {
-  const { placeholder, value, onChange, showClear } = props
+  const { placeholder, value, onChange, showClear, className, style, label } =
+    props
   const [controlledValue, controlledOnChange] = useControlled(value, onChange)
 
   return (
-    <div style={{ position: 'relative', width: '100%' }}>
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        display: 'flex',
+        gap: 4,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      {label && <div>{label}</div>}
       <input
+        className={className}
         placeholder={placeholder}
         value={controlledValue}
         onChange={(e) => controlledOnChange?.(e.target.value)}
@@ -37,6 +52,7 @@ export const Input: FC<InputProps> = (props) => {
           borderRadius: 4,
           width: '100%',
           boxSizing: 'border-box',
+          ...style,
         }}
       />
       {showClear && controlledValue && (
@@ -50,7 +66,6 @@ export const Input: FC<InputProps> = (props) => {
             background: 'transparent',
             border: 'none',
             cursor: 'pointer',
-            fontSize: 18,
           }}
         >
           &times;
