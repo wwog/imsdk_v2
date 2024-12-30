@@ -8,7 +8,7 @@
   overflow: hidden;
 
   .item {
-    min-width: 60px;
+    min-width: 100px;
     padding: 4px 8px;
     user-select: none;
     &:hover {
