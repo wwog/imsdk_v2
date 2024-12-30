@@ -6,6 +6,7 @@ import { RefreshSvg, TableSvg } from '../svg'
 import { Button } from '../button'
 import { IconButton } from '../button/iconButton'
 import { ContextMenu } from '../contextMenu'
+import { toast } from '../toast'
 
 //#region component Types
 export interface TableProps {
@@ -64,7 +65,17 @@ export const Table: FC<TableProps> = (props) => {
           {selectedTable.name}
         </div>
         <div className={clsx(className, styles.right)}>
-          <IconButton onClick={() => queryTableData()}>
+          <IconButton
+            onClick={() => {
+              queryTableData()
+                .then(() => {
+                  toast.show('刷新成功')
+                })
+                .catch(() => {
+                  toast.show('刷新失败')
+                })
+            }}
+          >
             <RefreshSvg size={20} />
           </IconButton>
         </div>
@@ -97,6 +108,7 @@ export const Table: FC<TableProps> = (props) => {
                       label: '复制',
                       onClick: () => {
                         navigator.clipboard.writeText(jsonStr)
+                        toast.show('已复制到剪贴板')
                       },
                     },
                     {
