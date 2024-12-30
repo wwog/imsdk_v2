@@ -131,6 +131,22 @@ export const editTableData = async (
   }
 }
 
+export const deleteTableData = async (
+  query: (sql: string) => Promise<any>,
+  tableName: string,
+  row: any,
+) => {
+  if (row.id) {
+    return await query(`DELETE FROM ${tableName} WHERE id = ${row.id};`)
+  } else {
+    return await query(
+      `DELETE FROM ${tableName} WHERE ${Object.keys(row)
+        .map((key) => `${key} = ${row[key]}`)
+        .join(' AND ')}`,
+    )
+  }
+}
+
 export const setCache = (key: string, value: any) => {
   localStorage.setItem('SQL_VIEW' + key, JSON.stringify(value))
 }

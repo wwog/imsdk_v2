@@ -1,6 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import {
   clsx,
+  deleteTableData,
   editTableData,
   formatSQLType,
   getCache,
@@ -167,6 +168,16 @@ export const Table: FC<TableProps> = (props) => {
                       onClick: () => {
                         navigator.clipboard.writeText(jsonStr)
                         toast.show('已复制到剪贴板')
+                      },
+                    },
+                    {
+                      label: '删除',
+                      onClick: async () => {
+                        if (!selectedTable) return
+                        //弹出确认框
+                        if (!window.confirm('确认删除吗？')) return
+                        await deleteTableData(exec, selectedTable.name, row)
+                        queryTableData()
                       },
                     },
                   ]}
