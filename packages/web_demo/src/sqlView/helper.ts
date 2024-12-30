@@ -66,7 +66,6 @@ export const tableQuery = async (
   filter: TFilter = {},
 ) => {
   const { page, pageSize } = pagination
-  console.log('filter', filter)
   const filterConditions = Object.keys(filter)
     .map((key) => {
       const { type, value } = filter[key]
