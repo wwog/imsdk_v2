@@ -80,4 +80,14 @@
       }
     }
   }
+  .tools{
+    display: flex;
+    padding: 0 10px;
+    justify-content: space-between;
+    .left,
+    .right{
+      display: flex;
+      align-items: center;
+    }
+  }
 }

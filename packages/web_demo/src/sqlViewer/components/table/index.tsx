@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from 'react'
 import { clsx, editTableData, getTableData } from '../../helper'
 import styles from './index.module.css'
 import { useHelper, useViewState } from '../../context'
+import { TableSvg, RefreshSvg } from '../svg'
 
 //#region component Types
 export interface TableProps {
@@ -35,7 +36,6 @@ export const Table: FC<TableProps> = (props) => {
     queryTableData()
   }, [selectedTable])
 
-
   const onColumnDoubleClick = async (row: any, column: any) => {
     console.log('row[column.name]', row, column)
     const value = prompt('请输入新的值', row[column.name])
@@ -50,6 +50,15 @@ export const Table: FC<TableProps> = (props) => {
 
   return (
     <div className={clsx(className, styles.root)} style={style}>
+      <div className={clsx(className, styles.tools)}>
+        <div className={clsx(className, styles.left)}>
+          <TableSvg />
+          {selectedTable.name}
+        </div>
+        <div className={clsx(className, styles.right)}>
+          <div onClick={() => queryTableData()}>刷新</div>
+        </div>
+      </div>
       <table
         className={styles.table}
         border={0}
