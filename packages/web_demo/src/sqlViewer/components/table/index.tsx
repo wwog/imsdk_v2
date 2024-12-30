@@ -38,6 +38,12 @@ export const Table: FC<TableProps> = (props) => {
   const totalPageSize = Math.ceil(total / pageSize.current)
   const mapFilter = useRef<TFilter>({})
 
+  const changePageSize = (size: number) => {
+    pageSize.current = size
+    page.current = 1
+    queryTableData()
+  }
+
   const queryTableData = async (callback?: () => void) => {
     if (!selectedTable) return
     const res = await tableQuery(
@@ -87,13 +93,12 @@ export const Table: FC<TableProps> = (props) => {
             value={pageSize.current + ''}
             onChange={(v) => {
               if (v === '0') {
-                pageSize.current = DEFPAGESIZE
+                changePageSize(DEFPAGESIZE)
               } else if (v === '') {
-                pageSize.current = 1
+                changePageSize(1)
               } else {
-                pageSize.current = parseInt(v)
+                changePageSize(parseInt(v))
               }
-              queryTableData()
             }}
           />
           <IconButton
