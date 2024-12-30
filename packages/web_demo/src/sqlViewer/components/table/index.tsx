@@ -3,6 +3,8 @@ import {
   clsx,
   editTableData,
   formatSQLType,
+  getCache,
+  setCache,
   tableQuery,
   type TFilter,
   ValidType,
@@ -22,7 +24,7 @@ export interface TableProps {
 }
 //#endregion component Types
 
-const DEFPAGESIZE = 50
+const DEFPAGESIZE = getCache('pageSize') ? parseInt(getCache('pageSize')!) : 50
 //#region component
 export const Table: FC<TableProps> = (props) => {
   const { className, style } = props
@@ -41,6 +43,7 @@ export const Table: FC<TableProps> = (props) => {
   const changePageSize = (size: number) => {
     pageSize.current = size
     page.current = 1
+    setCache('pageSize', size)
     queryTableData()
   }
 
@@ -69,7 +72,7 @@ export const Table: FC<TableProps> = (props) => {
 
   const onColumnDoubleClick = async (row: any, column: any) => {
     console.log('row[column.name]', row, column)
-    const value = prompt('请输入新的值', row[column.name])
+    const value = prompt(`请输入新的 ${column.name} 值`, row[column.name])
     if (value === null) return
     if (!selectedTable) return
     await editTableData(exec, selectedTable.name, row, column.name, value)

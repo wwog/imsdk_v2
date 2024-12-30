@@ -130,3 +130,12 @@ export const editTableData = async (
     )
   }
 }
+
+export const setCache = (key: string, value: any) => {
+  localStorage.setItem('SQL_VIEW' + key, JSON.stringify(value))
+}
+
+export const getCache = (key: string) => {
+  const value = localStorage.getItem('SQL_VIEW' + key)
+  return value ? value : undefined
+}
