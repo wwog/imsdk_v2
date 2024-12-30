@@ -2,6 +2,7 @@ import { FC, useEffect, useRef, useState } from 'react'
 import { clsx, editTableData, getTableData } from '../../helper'
 import styles from './index.module.css'
 import { useHelper, useViewState } from '../../context'
+import { TableSvg } from '../svg'
 import { Button } from '../button'
 
 //#region component Types
@@ -55,6 +56,15 @@ export const Table: FC<TableProps> = (props) => {
 
   return (
     <div className={clsx(className, styles.root)} style={style}>
+       <div className={clsx(className, styles.tools)}>
+        <div className={clsx(className, styles.left)}>
+          <TableSvg />
+          {selectedTable.name}
+        </div>
+        <div className={clsx(className, styles.right)}>
+          <div onClick={() => queryTableData()}>刷新</div>
+        </div>
+      </div>
       <div className={styles.tableWrapper}>
         <table
           className={styles.table}
