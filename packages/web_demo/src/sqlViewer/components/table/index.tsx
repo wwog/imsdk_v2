@@ -22,23 +22,6 @@ export interface TableProps {
 }
 //#endregion component Types
 
-const debounce = (fn: Function, delay: number, immediate: boolean = true) => {
-  let timer: any
-  return (...args: any[]) => {
-    const callNow = immediate && !timer
-    clearTimeout(timer)
-    timer = setTimeout(() => {
-      timer = null
-      if (!immediate) {
-        fn(...args)
-      }
-    }, delay)
-    if (callNow) {
-      fn(...args)
-    }
-  }
-}
-
 const PAGESIZE = 50
 //#region component
 export const Table: FC<TableProps> = (props) => {
@@ -54,7 +37,7 @@ export const Table: FC<TableProps> = (props) => {
   const totalPageSize = Math.ceil(total / PAGESIZE)
   const mapFilter = useRef<TFilter>({})
 
-  const queryTableData = debounce(async (callback?: () => void) => {
+  const queryTableData = async (callback?: () => void) => {
     if (!selectedTable) return
     const res = await tableQuery(
       query,
@@ -71,7 +54,7 @@ export const Table: FC<TableProps> = (props) => {
     setTotal(total)
     callback?.()
     console.log(res)
-  }, 300)
+  }
 
   useEffect(() => {
     queryTableData()

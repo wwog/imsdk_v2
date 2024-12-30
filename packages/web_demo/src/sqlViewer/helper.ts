@@ -70,6 +70,7 @@ export const tableQuery = async (
   const filterConditions = Object.keys(filter)
     .map((key) => {
       const { type, value } = filter[key]
+      if (value === '') return ''
       if (type === 'string') {
         return `${key} LIKE '%${value}%'`
       } else if (type === 'number') {
@@ -79,15 +80,12 @@ export const tableQuery = async (
           return `${key} = ${value}`
         }
       } else {
-        return '1=1'
+        return ''
       }
     })
     .join(' AND ')
 
-  const whereClause =
-    filterConditions !== '1=1' && filterConditions !== ''
-      ? `WHERE ${filterConditions}`
-      : ''
+  const whereClause = filterConditions !== '' ? `WHERE ${filterConditions}` : ''
 
   const data = await query(
     `SELECT * FROM ${tableName} ${whereClause} LIMIT ${pageSize} OFFSET ${(page - 1) * pageSize};`,
