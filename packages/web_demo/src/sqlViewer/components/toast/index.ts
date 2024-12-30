@@ -24,7 +24,7 @@ class Toast {
   show(message: string, duration: number = 3000) {
     if (this.toasts.length >= this.maxCount) {
       const firstToast = this.toasts.shift()
-      if (firstToast) {
+      if (firstToast && this.container.contains(firstToast)) {
         this.container.removeChild(firstToast)
       }
     }
@@ -46,7 +46,9 @@ class Toast {
     setTimeout(() => {
       toast.style.opacity = '0'
       setTimeout(() => {
-        this.container.removeChild(toast)
+        if (this.container.contains(toast)) {
+          this.container.removeChild(toast)
+        }
         this.toasts = this.toasts.filter((t) => t !== toast)
       }, 300)
     }, duration)

@@ -32,21 +32,70 @@ export const getAllTables = async (query: (sql: string) => Promise<any[]>) => {
       table.columns = await query(`PRAGMA table_info(${table.name})`)
     }),
   )
-
+  tables.forEach((table) => {
+    table.columns.forEach((column: { type: string }) => {
+      if (column?.type === '') {
+        column.type = 'UNKNOWN'
+      }
+    })
+  })
   return tables as GetAllTablesResult[]
 }
 
-export const getTableData = async (
+export interface FilterItem {
+  type: 'string' | 'number' | 'unknown'
+  value: string
+}
+export const ValidType = ['string', 'number']
+
+export type TFilter = Record<string, FilterItem>
+export const formatSQLType = (type: string) => {
+  switch (type) {
+    case 'TEXT':
+      return 'string'
+    case 'INTEGER':
+      return 'number'
+    default:
+      return 'unknown'
+  }
+}
+export const tableQuery = async (
   query: (sql: string) => Promise<any[]>,
   tableName: string,
   pagination: Pagination,
+  filter: TFilter = {},
 ) => {
   const { page, pageSize } = pagination
 
+  const filterConditions = Object.keys(filter)
+    .map((key) => {
+      const { type, value } = filter[key]
+      if (type === 'string') {
+        return `${key} LIKE '%${value}%'`
+      } else if (type === 'number') {
+        if (value.startsWith('>') || value.startsWith('<')) {
+          return `${key} ${value}`
+        } else {
+          return `${key} = ${value}`
+        }
+      } else {
+        return '1=1'
+      }
+    })
+    .join(' AND ')
+
+  const whereClause =
+    filterConditions !== '1=1' && filterConditions !== ''
+      ? `WHERE ${filterConditions}`
+      : ''
+
   const data = await query(
-    `SELECT * FROM ${tableName} LIMIT ${pageSize} OFFSET ${(page - 1) * pageSize};`,
+    `SELECT * FROM ${tableName} ${whereClause} LIMIT ${pageSize} OFFSET ${(page - 1) * pageSize};`,
   )
-  const totalResult = await query(`SELECT COUNT(*) as count FROM ${tableName};`)
+  const totalResult = await query(
+    `SELECT COUNT(*) as count FROM ${tableName} ${whereClause};`,
+  )
+
   const total = totalResult[0].count
 
   const isLastPage = page * pageSize >= total

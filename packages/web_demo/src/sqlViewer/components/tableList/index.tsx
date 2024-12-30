@@ -44,7 +44,7 @@ export const TableList: FC = () => {
               >
                 {table.columns.map((column) => (
                   <div key={column.name} className={styles.column}>
-                    <div>({column.type ? column.type : 'UNKNOWN'})</div>
+                    <div>({column.type})</div>
                     <div>{column.name}</div>
                   </div>
                 ))}

@@ -1,5 +1,12 @@
 import { FC, useEffect, useRef, useState } from 'react'
-import { clsx, editTableData, getTableData } from '../../helper'
+import {
+  clsx,
+  editTableData,
+  formatSQLType,
+  tableQuery,
+  type TFilter,
+  ValidType,
+} from '../../helper'
 import styles from './index.module.css'
 import { useHelper, useViewState } from '../../context'
 import { RefreshSvg, TableSvg } from '../svg'
@@ -7,13 +14,30 @@ import { Button } from '../button'
 import { IconButton } from '../button/iconButton'
 import { ContextMenu } from '../contextMenu'
 import { toast } from '../toast'
-
+import { Input } from '../input'
 //#region component Types
 export interface TableProps {
   className?: string
   style?: React.CSSProperties
 }
 //#endregion component Types
+
+const debounce = (fn: Function, delay: number, immediate: boolean = true) => {
+  let timer: any
+  return (...args: any[]) => {
+    const callNow = immediate && !timer
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      timer = null
+      if (!immediate) {
+        fn(...args)
+      }
+    }, delay)
+    if (callNow) {
+      fn(...args)
+    }
+  }
+}
 
 const PAGESIZE = 50
 //#region component
@@ -28,19 +52,26 @@ export const Table: FC<TableProps> = (props) => {
   const [isEnd, setIsEnd] = useState(false)
   const [total, setTotal] = useState(0)
   const totalPageSize = Math.ceil(total / PAGESIZE)
+  const mapFilter = useRef<TFilter>({})
 
-  const queryTableData = async () => {
+  const queryTableData = debounce(async (callback?: () => void) => {
     if (!selectedTable) return
-    const res = await getTableData(query, selectedTable.name, {
-      page: page.current,
-      pageSize: PAGESIZE,
-    })
+    const res = await tableQuery(
+      query,
+      selectedTable.name,
+      {
+        page: page.current,
+        pageSize: PAGESIZE,
+      },
+      mapFilter.current,
+    )
     const { data, isLastPage, total } = res
     setData(data)
     setIsEnd(isLastPage)
     setTotal(total)
+    callback?.()
     console.log(res)
-  }
+  }, 300)
 
   useEffect(() => {
     queryTableData()
@@ -67,13 +98,9 @@ export const Table: FC<TableProps> = (props) => {
         <div className={clsx(className, styles.right)}>
           <IconButton
             onClick={() => {
-              queryTableData()
-                .then(() => {
-                  toast.show('刷新成功')
-                })
-                .catch(() => {
-                  toast.show('刷新失败')
-                })
+              queryTableData(() => {
+                toast.show('刷新成功')
+              })
             }}
           >
             <RefreshSvg size={20} />
@@ -90,9 +117,32 @@ export const Table: FC<TableProps> = (props) => {
           <thead>
             <tr>
               <th className={styles.placeholder}></th>
-              {columns.map((column) => (
-                <th key={column.name}>{column.name}</th>
-              ))}
+              {columns.map((column) => {
+                const type = formatSQLType(column.type)
+                return (
+                  <th key={column.name}>
+                    <div>
+                      {column.name}&nbsp;
+                      <span style={{ fontSize: '.9em' }}>({column.type})</span>
+                    </div>
+                    {ValidType.includes(type) && (
+                      <div>
+                        <Input
+                          placeholder="filter"
+                          showClear
+                          onChange={(value) => {
+                            mapFilter.current[column.name] = {
+                              type,
+                              value,
+                            }
+                            queryTableData()
+                          }}
+                        />
+                      </div>
+                    )}
+                  </th>
+                )
+              })}
               <th className={styles.placeholder}></th>
             </tr>
           </thead>
@@ -109,16 +159,6 @@ export const Table: FC<TableProps> = (props) => {
                       onClick: () => {
                         navigator.clipboard.writeText(jsonStr)
                         toast.show('已复制到剪贴板')
-                      },
-                    },
-                    {
-                      label: '删除',
-                      onClick: async () => {
-                        if (!selectedTable) return
-                        /*  await exec(
-                          `DELETE FROM ${selectedTable.name} WHERE ${selectedTable.columns[0].name} = ${row[selectedTable.columns[0].name]}`,
-                        )
-                        queryTableData() */
                       },
                     },
                   ]}
