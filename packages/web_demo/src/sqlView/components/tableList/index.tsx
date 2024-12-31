@@ -126,8 +126,8 @@ export const TableList: FC = () => {
             <textarea
               name="code"
               id="code_input"
-              cols={80}
-              rows={16}
+              cols={40}
+              rows={20}
               className={styles.textarea}
               onKeyDown={(e) => {
                 if (e.key === 'Tab') {
