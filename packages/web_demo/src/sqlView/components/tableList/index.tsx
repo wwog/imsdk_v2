@@ -103,6 +103,7 @@ export const TableList: FC = () => {
             )}
           </div>
           <div className={styles.actions}>
+            <div>tables</div>
             {tables.map((it) => {
               const { name } = it
               return (
@@ -119,29 +120,6 @@ export const TableList: FC = () => {
                   {name}
                 </Button>
               )
-            })}
-          </div>
-          <div className={styles.actions}>
-            {tables.map((it) => {
-              const { columns } = it
-
-              return columns.map((column) => {
-                const { name } = column
-                return (
-                  <Button
-                    size="sm"
-                    key={name}
-                    onClick={() => {
-                      const codeInput = document.getElementById(
-                        'code_input',
-                      ) as HTMLTextAreaElement
-                      codeInput.value += ` ${name} `
-                    }}
-                  >
-                    {name}
-                  </Button>
-                )
-              })
             })}
           </div>
 
