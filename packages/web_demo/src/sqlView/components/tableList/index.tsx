@@ -103,7 +103,6 @@ export const TableList: FC = () => {
             )}
           </div>
           <div className={styles.actions}>
-            <div>tables</div>
             {tables.map((it) => {
               const { name } = it
               return (
