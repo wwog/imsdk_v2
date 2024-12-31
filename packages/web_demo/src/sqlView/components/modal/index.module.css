@@ -12,7 +12,15 @@
   min-width: 80px;
   border-radius: 4px;
   overflow: hidden;
-  padding-top: 20px;
+  z-index: 9000;
+}
+
+.modalHeader {
+  padding: 4px 16px;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  user-select: none;
 }
 
 .modalContent {
@@ -21,13 +29,12 @@
 
 .modalClose {
   color: rgb(255, 77, 0);
-  position: absolute;
-  top: 0.8px;
-  right: 0.8px;
   background: none;
   border: none;
   font-size: 16px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 
   &:hover {
     color: rgb(220, 66, 0);

@@ -5,6 +5,7 @@ import styles from './index.module.css'
 import { SQLiteSvg, TableSvg } from '../svg'
 import { IconButton } from '../button/iconButton'
 import { Modal } from '../modal'
+import { Button } from '../button'
 
 export const TableList: FC = () => {
   const helper = useHelper()
@@ -20,6 +21,15 @@ export const TableList: FC = () => {
   useEffect(() => {
     queryTables()
   }, [])
+
+  const querySqlInput = async () => {
+    const code = (document.getElementById('code_input') as any)!.value as string
+    if (code) {
+      helper.query(code).then((res) => {
+        console.log(res)
+      })
+    }
+  }
 
   return (
     <div className={styles.tableListWrapper}>
@@ -67,8 +77,103 @@ export const TableList: FC = () => {
         >
           <SQLiteSvg />
         </IconButton>
-        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-          <div>123</div>
+        <Modal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          title="Code Input"
+        >
+          <div
+            className={styles.actions}
+            onClick={(e) => {
+              const target = e.target as HTMLElement
+              if (target.tagName === 'BUTTON') {
+                const codeInput = document.getElementById(
+                  'code_input',
+                ) as HTMLTextAreaElement
+                codeInput.value += target.innerText + ' '
+              }
+            }}
+          >
+            {['SELECT *', 'INSERT', 'UPDATE', 'DELETE', 'FROM', ';'].map(
+              (it) => (
+                <Button size="sm" key={it}>
+                  {it}
+                </Button>
+              ),
+            )}
+          </div>
+          <div className={styles.actions}>
+            {tables.map((it) => {
+              const { name } = it
+              return (
+                <Button
+                  size="sm"
+                  key={name}
+                  onClick={() => {
+                    const codeInput = document.getElementById(
+                      'code_input',
+                    ) as HTMLTextAreaElement
+                    codeInput.value += ` ${name} `
+                  }}
+                >
+                  {name}
+                </Button>
+              )
+            })}
+          </div>
+          <div className={styles.actions}>
+            {tables.map((it) => {
+              const { columns } = it
+
+              return columns.map((column) => {
+                const { name } = column
+                return (
+                  <Button
+                    size="sm"
+                    key={name}
+                    onClick={() => {
+                      const codeInput = document.getElementById(
+                        'code_input',
+                      ) as HTMLTextAreaElement
+                      codeInput.value += ` ${name} `
+                    }}
+                  >
+                    {name}
+                  </Button>
+                )
+              })
+            })}
+          </div>
+
+          <div className={styles.modalContent}>
+            <textarea
+              name="code"
+              id="code_input"
+              cols={80}
+              rows={16}
+              className={styles.textarea}
+              onKeyDown={(e) => {
+                if (e.key === 'Tab') {
+                  e.preventDefault()
+                  const codeInput = document.getElementById(
+                    'code_input',
+                  ) as HTMLTextAreaElement
+                  codeInput.value += '  '
+                } else if (e.key === 'Enter') {
+                  //如果带有shift键，就换行
+                  if (e.shiftKey) {
+                    return
+                  }
+
+                  e.preventDefault()
+                  querySqlInput()
+                }
+              }}
+            ></textarea>
+            <Button size="lg" onClick={querySqlInput}>
+              Run
+            </Button>
+          </div>
         </Modal>
       </div>
     </div>
